@@ -499,3 +499,35 @@ form a{
         display: none;
     }
 }
+.messages {
+    width: 260px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 10;
+}
+
+.messages {
+    width: 260px;
+    margin: 10px auto;
+    text-align: center;
+}
+
+.message {
+    padding: 8px 10px;
+    margin-bottom: 8px;
+    border-radius: 5px;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.message.error {
+    background-color: #ffd6d6;
+    color: #d00000;
+    border: 1px solid #ff9999;
+}
+
+.message.success {
+    background-color: #d8ffd8;
+    color: #008000;
+    border: 1px solid #8be28b;
+}

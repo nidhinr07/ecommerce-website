@@ -12,8 +12,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
         rel="stylesheet">
 
-    <link rel="stylesheet"
-        href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 </head>
 
 <body>
@@ -32,15 +31,14 @@
                 <ul id="MenuItems">
                     <li><a href="{% url 'home' %}">Home</a></li>
                     <li><a href="{% url 'products' %}">Products</a></li>
+                    {% if not user.is_authenticated %}
                     <li><a href="{% url 'account' %}">Account</a></li>
+                    {% else %}
+                    <li><a href="{% url 'logout' %}">Logout</a></li>
+                    {% endif %}
+
                 </ul>
             </nav>
-
-            <a href="{% url 'cart' %}">
-                <img src="{% static 'images/cart.png' %}" width="30px" height="30px">
-            </a>
-
-            <img src="{% static 'images/menu.png' %}" class="menu-icon" onclick="menutoggle()">
 
         </div>
 
