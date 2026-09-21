@@ -1,0 +1,416 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>My Orders</title>
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/order_status.css' %}">
+
+</head>
+
+<body>
+
+
+<!-- ==================== NAVBAR ==================== -->
+
+<div class="container">
+
+    <div class="navbar">
+
+        <div class="logo">
+
+            <a href="{% url 'home' %}">
+                <img src="{% static 'images/logo.png' %}" alt="logo" width="125px">
+            </a>
+
+        </div>
+
+
+        <nav>
+
+            <ul id="MenuItems">
+
+                <li>
+                    <a href="{% url 'home' %}">Home</a>
+                </li>
+
+                <li>
+                    <a href="{% url 'products' %}">Products</a>
+                </li>
+
+                <li>
+                    <a href="{% url 'cart' %}">Cart</a>
+                </li>
+
+                <li>
+                    <a href="{% url 'order_status' %}">My Orders</a>
+                </li>
+
+                <li>
+                    <a href="{% url 'logout' %}">Logout</a>
+                </li>
+
+            </ul>
+
+        </nav>
+
+    </div>
+
+</div>
+
+
+<!-- ==================== ORDER STATUS ==================== -->
+
+<section class="order-status-page">
+
+    <div class="order-status-container">
+
+        <h1 class="order-status-title">
+            My Orders
+        </h1>
+
+
+        {% if orders %}
+
+            {% for order in orders %}
+
+            <div class="order-card">
+
+
+                <!-- Order Header -->
+
+                <div class="order-card-header">
+
+                    <div>
+
+                        <h2>
+                            Order #{{ order.id }}
+                        </h2>
+
+                        <p>
+                            Placed on
+                            {{ order.created_at|date:"d M Y, h:i A" }}
+                        </p>
+
+                    </div>
+
+
+                    <div class="current-status">
+
+                        <span class="status-label">
+                            Current Status
+                        </span>
+
+                        <span class="
+                            status-badge
+
+                            {% if order.order_status == order.ORDER_CONFIRMED %}
+                                confirmed
+                            {% elif order.order_status == order.ORDER_PROCESSED %}
+                                processed
+                            {% elif order.order_status == order.ORDER_DELIVERED %}
+                                delivered
+                            {% elif order.order_status == order.ORDER_REJECTED %}
+                                rejected
+                            {% endif %}
+                        ">
+
+                            {{ order.get_order_status_display }}
+
+                        </span>
+
+                    </div>
+
+                </div>
+
+
+                <!-- Products -->
+
+                <div class="order-products">
+
+                    <h3>
+                        Ordered Products
+                    </h3>
+
+
+                    {% for item in order.added_items.all %}
+
+                    <div class="order-product">
+
+                        <div class="product-image">
+
+                            {% if item.product.image %}
+
+                                <img
+                                    src="{{ item.product.image.url }}"
+                                    alt="{{ item.product.title }}"
+                                >
+
+                            {% endif %}
+
+                        </div>
+
+
+                        <div class="product-details">
+
+                            <h4>
+                                {{ item.product.title }}
+                            </h4>
+
+                            <p>
+                                Quantity: {{ item.quantity }}
+                            </p>
+
+                            <p>
+                                Price:
+                                ${{ item.product.price|floatformat:2 }}
+                            </p>
+
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+
+                </div>
+
+
+                <!-- Status Timeline -->
+
+                {% if order.order_status != order.ORDER_REJECTED %}
+
+                <div class="order-timeline">
+
+
+                    <!-- Confirmed -->
+
+                    <div class="
+                        timeline-step
+                        {% if order.order_status >= order.ORDER_CONFIRMED %}
+                            active
+                        {% endif %}
+                    ">
+
+                        <div class="timeline-circle">
+                            {% if order.order_status >= order.ORDER_CONFIRMED %}
+                                ✓
+                            {% else %}
+                                1
+                            {% endif %}
+                        </div>
+
+                        <p>
+                            Order Confirmed
+                        </p>
+
+                    </div>
+
+
+                    <div class="
+                        timeline-line
+                        {% if order.order_status >= order.ORDER_PROCESSED %}
+                            active-line
+                        {% endif %}
+                    "></div>
+
+
+                    <!-- Processed -->
+
+                    <div class="
+                        timeline-step
+                        {% if order.order_status >= order.ORDER_PROCESSED %}
+                            active
+                        {% endif %}
+                    ">
+
+                        <div class="timeline-circle">
+
+                            {% if order.order_status >= order.ORDER_PROCESSED %}
+                                ✓
+                            {% else %}
+                                2
+                            {% endif %}
+
+                        </div>
+
+                        <p>
+                            Order Processed
+                        </p>
+
+                    </div>
+
+
+                    <div class="
+                        timeline-line
+                        {% if order.order_status >= order.ORDER_DELIVERED %}
+                            active-line
+                        {% endif %}
+                    "></div>
+
+
+                    <!-- Delivered -->
+
+                    <div class="
+                        timeline-step
+                        {% if order.order_status >= order.ORDER_DELIVERED %}
+                            active
+                        {% endif %}
+                    ">
+
+                        <div class="timeline-circle">
+
+                            {% if order.order_status >= order.ORDER_DELIVERED %}
+                                ✓
+                            {% else %}
+                                3
+                            {% endif %}
+
+                        </div>
+
+                        <p>
+                            Order Delivered
+                        </p>
+
+                    </div>
+
+                </div>
+
+                {% else %}
+
+                <div class="order-rejected-message">
+
+                    <strong>Order Rejected</strong>
+
+                    <p>
+                        Unfortunately, this order was rejected.
+                    </p>
+
+                </div>
+
+                {% endif %}
+
+
+            </div>
+
+            {% endfor %}
+
+
+        {% else %}
+
+        <!-- No Orders -->
+
+        <div class="no-orders">
+
+            <h2>
+                No Confirmed Orders
+            </h2>
+
+            <p>
+                You don't have any confirmed orders yet.
+            </p>
+
+            <a href="{% url 'products' %}">
+                Continue Shopping
+            </a>
+
+        </div>
+
+        {% endif %}
+
+    </div>
+
+</section>
+
+
+<!-- ==================== FOOTER ==================== -->
+
+<div class="footer">
+
+    <div class="container">
+
+        <div class="row">
+
+            <div class="footer-col-1">
+
+                <h3>Download Our App</h3>
+
+                <p>
+                    Download App for Android and ios mobile phone.
+                </p>
+
+                <div class="app-logo">
+
+                    <img src="{% static 'images/play-store.png' %}">
+                    <img src="{% static 'images/app-store.png' %}">
+
+                </div>
+
+            </div>
+
+
+            <div class="footer-col-2">
+
+                <img src="{% static 'images/logo-white.png' %}">
+
+                <p>
+                    Our Purpose Is To Sustainably Make the Pleasure
+                    and Benefits of Sports Accessible to the Many.
+                </p>
+
+            </div>
+
+
+            <div class="footer-col-3">
+
+                <h3>Useful Links</h3>
+
+                <ul>
+
+                    <li>Coupons</li>
+                    <li>Blog Post</li>
+                    <li>Return Policy</li>
+                    <li>Join Affiliate</li>
+
+                </ul>
+
+            </div>
+
+
+            <div class="footer-col-4">
+
+                <h3>Follow Us</h3>
+
+                <ul>
+
+                    <li>Facebook</li>
+                    <li>Twitter</li>
+                    <li>Instagram</li>
+                    <li>Youtube</li>
+
+                </ul>
+
+            </div>
+
+        </div>
+
+        <hr>
+
+        <p class="copyright">
+            Copyright 2020 - Samwit Adhikary
+        </p>
+
+    </div>
+
+</div>
+
+
+</body>
+
+</html>

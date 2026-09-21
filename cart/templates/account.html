@@ -37,6 +37,9 @@
             <a href="{% url 'cart' %}">
                 <img src="{% static 'images/cart.png' %}" width="30px" height="30px">
             </a>
+            <li>
+                <a href="{% url 'order_status' %}">My Orders</a>
+            </li>
             {% endif %}
 
             <img src="{% static 'images/menu.png' %}" class="menu-icon" onclick="menutoggle()">

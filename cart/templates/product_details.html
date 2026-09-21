@@ -34,6 +34,9 @@
                     {% if not user.is_authenticated %}
                     <li><a href="{% url 'account' %}">Account</a></li>
                     {% else %}
+                    <li>
+                        <a href="{% url 'order_status' %}">My Orders</a>
+                    </li>
                     <li><a href="{% url 'logout' %}">Logout</a></li>
                     {% endif %}
                 </ul>
@@ -71,18 +74,21 @@
 
                 <h4>${{ product.price }}</h4>
 
-                <select>
-                    <option>Select Size</option>
-                    <option>XXL</option>
-                    <option>XL</option>
-                    <option>L</option>
-                    <option>M</option>
-                    <option>S</option>
-                </select>
+                {% if user.is_authenticated %}
+                <form method="post" action="{% url 'add_to_cart' %}">
+                    {% csrf_token %}
 
-                <input type="number" value="1">
+                    <input type="hidden" name="product_id" value="{{ product.id }}">
 
-                <a href="" class="btn">Add To Cart</a>
+                    <input type="number" name="quantity" value="1">
+                    <button type="submit" class="btn">Add To Cart</button>
+                    {% else %}
+
+                    <a href="{% url 'account' %}"
+                        style="display: inline-block; padding: 10px 15px; background-color: #007bff; color: #ffffff; text-decoration: none; border-radius: 4px; font-weight: bold; text-align: center; font-family: sans-serif;">Sign
+                        Up to Buy</a>
+                    {% endif %}
+                </form>
 
                 <h3>Product Details <i class="fa fa-indent"></i></h3>
 
